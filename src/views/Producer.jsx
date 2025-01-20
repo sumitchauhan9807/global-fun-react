@@ -106,7 +106,7 @@ function Producer() {
 		try {
 			localStream = await navigator.mediaDevices.getUserMedia({
 				video: true,
-				audio: false,
+				audio: true,
 			});
 			localVideoRef.current.srcObject = localStream;
 			localVideoRef.current.play();
