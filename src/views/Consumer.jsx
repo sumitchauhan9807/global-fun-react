@@ -2,18 +2,19 @@ import { useMutation } from "@apollo/client";
 import { CREATE_CONSUMER_TRANSPORT ,GET_RTP_CAPABILITIES ,CONSUME_MEDIA ,CONNECT_CONSUMER_TRANSPORT ,UNPAUSE_CONSUMER } from "src/queries";
 import { Device } from "mediasoup-client";
 import { useRef } from "react";
-
+import { useParams } from 'react-router-dom';
 const device = new Device();
 let localStream = null;
 let consumerTransport = null;
 let consumer = null;
-let clientId = "22";
 let modelId = "5";
 
 
 function Consumer() {
 	let localVideoRef = useRef(null);
-	const [getRtpCap, { loading }] = useMutation(GET_RTP_CAPABILITIES);
+  let { id } = useParams();
+  let clientId = id
+  const [getRtpCap, { loading }] = useMutation(GET_RTP_CAPABILITIES);
   const [createConsumerTransport, { loadingCCT }] = useMutation(CREATE_CONSUMER_TRANSPORT);
   const [consumeMedia, { loadingCM }] = useMutation(CONSUME_MEDIA);
   const [connectConsumerTransport, { loadingCCT2 }] = useMutation(CONNECT_CONSUMER_TRANSPORT);
