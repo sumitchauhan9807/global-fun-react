@@ -47,6 +47,7 @@ function Consumer() {
     localVideoRef.current.srcObject = new MediaStream([track]);
     await unpauseConsumer({
 			variables: {
+        modelId: modelId,
 				clientId: clientId,
 			},
 		});
@@ -57,6 +58,7 @@ function Consumer() {
     let { data } = await createConsumerTransport({
 			variables: {
 				clientId: clientId,
+        modelId: modelId
 			},
 		});
 		let { id, iceParameters, iceCandidates, dtlsParameters } = data.createConsumerTransport;
@@ -86,6 +88,7 @@ function Consumer() {
       // const resp = await socket.emitWithAck('connect-consumer-transport',{dtlsParameters})
       let { data } = await connectConsumerTransport({
         variables: {
+          modelId: modelId,
           clientId: clientId,
           dtlsParameters: JSON.stringify(dtlsParameters)
         },

@@ -37,8 +37,8 @@ mutation startProducing($transportId: String!, $rtpParameters: String!, $kind: S
 
 
 export const CREATE_CONSUMER_TRANSPORT = gql`
-	mutation createConsumerTransport($clientId: String!) {
-		createConsumerTransport(clientId: $clientId) {
+	mutation createConsumerTransport($clientId: String!,$modelId:String!) {
+		createConsumerTransport(clientId: $clientId,modelId:$modelId) {
 			id
 			iceParameters
 			iceCandidates
@@ -60,14 +60,14 @@ export const CONSUME_MEDIA = gql`
 `;
 
 export const CONNECT_CONSUMER_TRANSPORT = gql`
-	mutation connectConsumerTransport($clientId: String!,$dtlsParameters:String!) {
-		connectConsumerTransport(clientId: $clientId,dtlsParameters:$dtlsParameters)
+	mutation connectConsumerTransport($clientId: String!,$modelId:String!,$dtlsParameters:String!) {
+		connectConsumerTransport(clientId: $clientId,modelId:$modelId,dtlsParameters:$dtlsParameters)
 	}
 `;
 
 export const UNPAUSE_CONSUMER = gql`
-	mutation unpauseConsumer($clientId: String!) {
-		unpauseConsumer(clientId: $clientId)
+	mutation unpauseConsumer($clientId: String!,$modelId:String!) {
+		unpauseConsumer(clientId: $clientId,modelId:$modelId)
 	}
 `;
 

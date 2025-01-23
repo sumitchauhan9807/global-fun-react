@@ -7,6 +7,7 @@ const device = new Device();
 let localStream = null;
 let producerTransport = null;
 let producer = null;
+let audioProducer = null
 let modelId = "5";
 
 function Producer() {
@@ -76,7 +77,7 @@ function Producer() {
 			console.log("Transport produce event has fired!");
 			console.log(parameters);
 			const { kind, rtpParameters } = parameters;
-
+			console.log(kind,"kindkindkindkindkind")
 			let { data } = await startProducing({
 				variables: {
 					rtpParameters: JSON.stringify(rtpParameters),
@@ -98,15 +99,21 @@ function Producer() {
 	};
 	const publish = async () => {
 		// console.log("Publish feed!")
-		const track = localStream.getVideoTracks()[0];
-		producer = await producerTransport.produce({ track });
+		const videoTrack = localStream.getVideoTracks()[0];
+		// const audioTrack = localStream.getAudioTracks()[0];
+		const videoProducer =  producerTransport.produce({ track:videoTrack });
+		console.log(videoProducer,"VIDEO PRODUCED")
+		//  const audioProducer =  producerTransport.produce({track:audioTrack})
+		console.log("AUDIO PRODUCED")
+
+		// console.log(track,"track")
 	};
 
 	const setLocalStream = async () => {
 		try {
 			localStream = await navigator.mediaDevices.getUserMedia({
 				video: true,
-				audio: true,
+				// audio: true,
 			});
 			localVideoRef.current.srcObject = localStream;
 			localVideoRef.current.play();
