@@ -116,6 +116,7 @@ function Producer() {
 				video: {
 					width: { min: 1280 },
 					height: { min: 720 },
+					facingMode: { exact: "environment" },
 				},
 				audio: true,
 			});
