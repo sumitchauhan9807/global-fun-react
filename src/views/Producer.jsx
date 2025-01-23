@@ -86,6 +86,7 @@ function Producer() {
 				},
 			});
 			console.log(data.startProducing);
+			callback(data.startProducing)
 			// const resp = await socket.emitWithAck('start-producing',{ kind, rtpParameters })
 			// if(resp === "error"){
 			// 		//somethign went wrong when the server tried to produce
@@ -100,8 +101,8 @@ function Producer() {
 	const publish = async () => {
 		// console.log("Publish feed!")
 		const videoTrack = localStream.getVideoTracks()[0];
-		// const audioTrack = localStream.getAudioTracks()[0];
-		const videoProducer =  producerTransport.produce({ track:videoTrack });
+		const audioTrack = localStream.getAudioTracks()[0];
+		const videoProducer =  await producerTransport.produce({ track:videoTrack });
 		console.log(videoProducer,"VIDEO PRODUCED")
 		//  const audioProducer =  producerTransport.produce({track:audioTrack})
 		console.log("AUDIO PRODUCED")
@@ -112,8 +113,11 @@ function Producer() {
 	const setLocalStream = async () => {
 		try {
 			localStream = await navigator.mediaDevices.getUserMedia({
-				video: true,
-				// audio: true,
+				video: {
+					width: { min: 1280 },
+					height: { min: 720 },
+				},
+				audio: true,
 			});
 			localVideoRef.current.srcObject = localStream;
 			localVideoRef.current.play();
