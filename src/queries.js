@@ -66,8 +66,8 @@ export const CONNECT_CONSUMER_TRANSPORT = gql`
 `;
 
 export const UNPAUSE_CONSUMER = gql`
-	mutation unpauseConsumer($clientId: String!,$modelId:String!) {
-		unpauseConsumer(clientId: $clientId,modelId:$modelId)
+	mutation unpauseConsumer($clientId: String!,$modelId:String!,$kind:String!) {
+		unpauseConsumer(clientId: $clientId,modelId:$modelId,kind:$kind)
 	}
 `;
 

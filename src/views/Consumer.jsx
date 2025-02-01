@@ -29,9 +29,11 @@ function Consumer() {
       consume('audio'),
       consume('video')
   ])
-    // let consumer = await consume('audio')
-    // const {track} = videoConsumer
-    const combinedStream = new MediaStream([audioConsumer?.track,videoConsumer?.track])
+   console.log(audioConsumer,"AUDIO CONSUMER")
+   console.log(videoConsumer,"VIDEO CONSUMER")
+   const combinedStream = new MediaStream([audioConsumer?.track,videoConsumer?.track])
+
+    // const combinedStream = new MediaStream([audioConsumer?.track])
     localVideoRef.current.srcObject = combinedStream
     localVideoRef.current.play();
   }
@@ -55,6 +57,7 @@ function Consumer() {
 			variables: {
         modelId: modelId,
 				clientId: clientId,
+        kind:kind
 			},
 		});
     return consumer
