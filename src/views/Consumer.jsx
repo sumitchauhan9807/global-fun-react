@@ -6,7 +6,10 @@ import { useParams } from 'react-router-dom';
 const device = new Device();
 let localStream = null;
 let consumerTransport = null;
-let consumer = null;
+let consumer = {
+  video:null,
+  audio:null
+};
 let modelId = "5";
 
 
@@ -39,6 +42,11 @@ function Consumer() {
   }
 
 
+  const showCOnsumers = () => {
+    console.log(consumer)
+  }
+
+
   const consume = async (kind) => {
     let { data } = await consumeMedia({
 			variables: {
@@ -51,8 +59,8 @@ function Consumer() {
 
     let consumerParams = data.consumeMedia
     consumerParams.rtpParameters = JSON.parse(consumerParams.rtpParameters)
-    consumer = await consumerTransport.consume(consumerParams)
-    
+    let toReturnconsumer = await consumerTransport.consume(consumerParams)
+    consumer[kind] = toReturnconsumer
     await unpauseConsumer({
 			variables: {
         modelId: modelId,
@@ -60,7 +68,7 @@ function Consumer() {
         kind:kind
 			},
 		});
-    return consumer
+    return toReturnconsumer
   }
 
   const createConsumer = async () =>{ 
@@ -127,9 +135,9 @@ function Consumer() {
 				<button className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={runTest}>
 					test
 				</button>
-				{/* <button className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={publish}>
-					publish
-				</button> */}
+				<button className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={showCOnsumers}>
+					show Consumers
+				</button>
 			</div>
 		</>
   )
