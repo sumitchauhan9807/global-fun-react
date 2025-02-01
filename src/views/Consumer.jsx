@@ -25,33 +25,39 @@ function Consumer() {
 		let routerRtpCapabilities = JSON.parse(data.getRtpCapabilities);
 		await device.load({ routerRtpCapabilities });
     await createConsumer()
-    await consume()
+    const [audioConsumer,videoConsumer] = await Promise.all([
+      consume('audio'),
+      consume('video')
+  ])
+    // let consumer = await consume('audio')
+    // const {track} = videoConsumer
+    const combinedStream = new MediaStream([audioConsumer?.track,videoConsumer?.track])
+    localVideoRef.current.srcObject = combinedStream
+    localVideoRef.current.play();
   }
 
 
-  const consume = async () => {
+  const consume = async (kind) => {
     let { data } = await consumeMedia({
 			variables: {
 				clientId: clientId,
 				modelId: modelId,
-        rtpCapabilities: JSON.stringify(device.rtpCapabilities)
+        rtpCapabilities: JSON.stringify(device.rtpCapabilities),
+        kind:kind
 			},
 		});
 
     let consumerParams = data.consumeMedia
     consumerParams.rtpParameters = JSON.parse(consumerParams.rtpParameters)
     consumer = await consumerTransport.consume(consumerParams)
-    const {track} = consumer
-    console.log(track,"tracktrack")
-    console.log("IA AM HEREEE")
-    localVideoRef.current.srcObject = new MediaStream([track]);
+    
     await unpauseConsumer({
 			variables: {
         modelId: modelId,
 				clientId: clientId,
 			},
 		});
-    localVideoRef.current.play();
+    return consumer
   }
 
   const createConsumer = async () =>{ 

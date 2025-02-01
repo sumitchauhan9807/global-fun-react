@@ -49,8 +49,8 @@ export const CREATE_CONSUMER_TRANSPORT = gql`
 
 
 export const CONSUME_MEDIA = gql`
-	mutation consumeMedia($rtpCapabilities: String!,$clientId:String!,$modelId:String!) {
-		consumeMedia(rtpCapabilities: $rtpCapabilities,clientId:$clientId,modelId:$modelId) {
+	mutation consumeMedia($rtpCapabilities: String!,$clientId:String!,$modelId:String!,$kind:String!) {
+		consumeMedia(rtpCapabilities: $rtpCapabilities,clientId:$clientId,modelId:$modelId,kind:$kind) {
 			producerId
 			id
 			kind

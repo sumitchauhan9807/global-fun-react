@@ -104,7 +104,7 @@ function Producer() {
 		const audioTrack = localStream.getAudioTracks()[0];
 		const videoProducer =  await producerTransport.produce({ track:videoTrack });
 		console.log(videoProducer,"VIDEO PRODUCED")
-		//  const audioProducer =  producerTransport.produce({track:audioTrack})
+		 const audioProducer =  producerTransport.produce({track:audioTrack})
 		console.log("AUDIO PRODUCED")
 
 		// console.log(track,"track")
@@ -116,7 +116,7 @@ function Producer() {
 				video: {
 					width: { min: 1280 },
 					height: { min: 720 },
-					facingMode: { exact: "environment" },
+					// facingMode: { exact: "environment" },
 				},
 				audio: true,
 			});
