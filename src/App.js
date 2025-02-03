@@ -5,8 +5,8 @@ import Router from "src/router";
 function App() {
 	return (
 		<div className="App">
-			<Navigation />
-			<div className="pt-24">
+			{/* <Navigation /> */}
+			<div >
 				<BrowserRouter>
 					<Router />
 				</BrowserRouter>

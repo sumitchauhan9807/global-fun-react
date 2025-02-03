@@ -1,5 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import 'src/assets/css/primary.css'
+import 'src/assets/css/bootstrap.css'
+import 'src/assets/css/bootstrap-mobile1.css'
 import "./index.css";
 import App from "./App";
 import { ApolloProvider } from "@apollo/client";
