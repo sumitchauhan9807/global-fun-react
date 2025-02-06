@@ -3,6 +3,7 @@ import { CREATE_CONSUMER_TRANSPORT ,GET_RTP_CAPABILITIES ,CONSUME_MEDIA ,CONNECT
 import { Device } from "mediasoup-client";
 import { useRef } from "react";
 import { useParams } from 'react-router-dom';
+import { useDispatch ,useSelector } from "react-redux";
 const device = new Device();
 let localStream = null;
 let consumerTransport = null;
@@ -10,13 +11,15 @@ let consumer = {
   video:null,
   audio:null
 };
-let modelId = "5";
 
 
 function Consumer() {
+  const appData = useSelector((state) => state.app);
+  let publicId = appData.publicId
 	let localVideoRef = useRef(null);
-  let { id } = useParams();
-  let clientId = id
+  let { username } = useParams();
+  let clientId = publicId
+  let modelId = username
   const [getRtpCap, { loading }] = useMutation(GET_RTP_CAPABILITIES);
   const [createConsumerTransport, { loadingCCT }] = useMutation(CREATE_CONSUMER_TRANSPORT);
   const [consumeMedia, { loadingCM }] = useMutation(CONSUME_MEDIA);

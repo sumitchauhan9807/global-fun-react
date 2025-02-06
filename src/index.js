@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import 'src/assets/css/primary.css'
-import 'src/assets/css/bootstrap.css'
-import 'src/assets/css/bootstrap-mobile1.css'
+import "src/assets/css/primary.css";
+import "src/assets/css/bootstrap.css";
+import "src/assets/css/bootstrap-mobile1.css";
 import "./index.css";
+import store from "src/redux/store";
+import { Provider } from "react-redux";
 import App from "./App";
 import { ApolloProvider } from "@apollo/client";
 import ApolloClient from "src/apollo";
@@ -11,7 +13,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<React.StrictMode>
 		<ApolloProvider client={ApolloClient}>
-			<App />
+			<Provider store={store().store}>
+				<App />
+			</Provider>
 		</ApolloProvider>
 	</React.StrictMode>
 );

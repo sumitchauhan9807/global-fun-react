@@ -9,7 +9,7 @@ function Router() {
 		<Routes>
 			<Route exact path="/" element={<Front />} />
 			<Route exact path="/producer" element={<Producer />} />
-			<Route exact path="/consumer/:id" element={<Consumer />} />
+			<Route exact path="/consumer/:username" element={<Consumer />} />
 		</Routes>
 	);
 }
