@@ -20,11 +20,11 @@ function Consumer() {
   let { username } = useParams();
   let clientId = publicId
   let modelId = username
-  const [getRtpCap, { loading }] = useMutation(GET_RTP_CAPABILITIES);
-  const [createConsumerTransport, { loadingCCT }] = useMutation(CREATE_CONSUMER_TRANSPORT);
-  const [consumeMedia, { loadingCM }] = useMutation(CONSUME_MEDIA);
-  const [connectConsumerTransport, { loadingCCT2 }] = useMutation(CONNECT_CONSUMER_TRANSPORT);
-  const [unpauseConsumer, { loadingUP }] = useMutation(UNPAUSE_CONSUMER);
+  const [getRtpCap, { loading }] = useMutation(GET_RTP_CAPABILITIES,{context:{apiName:"sfu"}});
+  const [createConsumerTransport, { loadingCCT }] = useMutation(CREATE_CONSUMER_TRANSPORT,{context:{apiName:"sfu"}});
+  const [consumeMedia, { loadingCM }] = useMutation(CONSUME_MEDIA,{context:{apiName:"sfu"}});
+  const [connectConsumerTransport, { loadingCCT2 }] = useMutation(CONNECT_CONSUMER_TRANSPORT,{context:{apiName:"sfu"}});
+  const [unpauseConsumer, { loadingUP }] = useMutation(UNPAUSE_CONSUMER,{context:{apiName:"sfu"}});
 
   const runTest = async () => {
     let { data } = await getRtpCap();
