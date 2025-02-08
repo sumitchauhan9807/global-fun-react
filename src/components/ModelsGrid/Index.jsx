@@ -22,7 +22,7 @@ function Index() {
             {allModels.map((model,index)=>{
               return (
                 <div key={index}  className="model-list-item">
-                  <Link to={`/consumer/${model.username}`} className="model-list-item-link no-cover" id="model-list-item-138199186">
+                  <Link to={`/${model.username}`} className="model-list-item-link no-cover" id="model-list-item-138199186">
                   <img class="image-background" alt="KiraKayleigh1's Webcam Show" loading="lazy" src="https://img.strpst.com/thumbs/1738872180/135788304_webp"/>
                     <div className="model-list-item-upper">
                       <span className="ModelListItemBadge#c_ ModelListItemBadge__vr#eJ" /><span className="ModelListItemBadge#c_ ModelListItemBadge__toy#Gb" />

@@ -1,10 +1,13 @@
+
+import LiveFeed from 'src/components/ModelCam/LiveFeed'
+import ChatBox from 'src/components/ModelCam/ChatBox'
 import { useMutation } from "@apollo/client";
 import { CREATE_CONSUMER_TRANSPORT, GET_RTP_CAPABILITIES, CONSUME_MEDIA, CONNECT_CONSUMER_TRANSPORT, UNPAUSE_CONSUMER } from "src/queries";
 import { Device } from "mediasoup-client";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import ChatBox from "src/components/ChatBox";
+// import ChatBox from "src/components/ChatBox";
 const device = new Device();
 let localStream = null;
 let consumerTransport = null;
@@ -13,8 +16,9 @@ let consumer = {
 	audio: null,
 };
 
-function Consumer() {
-	const appData = useSelector((state) => state.app);
+
+function Index() {
+  const appData = useSelector((state) => state.app);
 	let publicId = appData.publicId;
 	let localVideoRef = useRef(null);
 	let { username } = useParams();
@@ -25,20 +29,32 @@ function Consumer() {
 	const [consumeMedia, { loadingCM }] = useMutation(CONSUME_MEDIA, { context: { apiName: "sfu" } });
 	const [connectConsumerTransport, { loadingCCT2 }] = useMutation(CONNECT_CONSUMER_TRANSPORT, { context: { apiName: "sfu" } });
 	const [unpauseConsumer, { loadingUP }] = useMutation(UNPAUSE_CONSUMER, { context: { apiName: "sfu" } });
+	const [playing,setIsplaying] = useState(false)
 
-	const runTest = async () => {
-		let { data } = await getRtpCap();
-		let routerRtpCapabilities = JSON.parse(data.getRtpCapabilities);
-		await device.load({ routerRtpCapabilities });
-		await createConsumer();
-		const [audioConsumer, videoConsumer] = await Promise.all([consume("audio"), consume("video")]);
-		console.log(audioConsumer, "AUDIO CONSUMER");
-		console.log(videoConsumer, "VIDEO CONSUMER");
-		const combinedStream = new MediaStream([audioConsumer?.track, videoConsumer?.track]);
 
-		// const combinedStream = new MediaStream([audioConsumer?.track])
-		localVideoRef.current.srcObject = combinedStream;
-		localVideoRef.current.play();
+  const play = async () => {
+    try{ 
+      let { data } = await getRtpCap();
+      let routerRtpCapabilities = JSON.parse(data.getRtpCapabilities);
+      await device.load({ routerRtpCapabilities });
+      await createConsumer();
+      const [audioConsumer, videoConsumer] = await Promise.all([consume("audio"), consume("video")]);
+      console.log(audioConsumer, "AUDIO CONSUMER");
+      console.log(videoConsumer, "VIDEO CONSUMER");
+      const combinedStream = new MediaStream([audioConsumer?.track, videoConsumer?.track]);
+
+      // const combinedStream = new MediaStream([audioConsumer?.track])
+      localVideoRef.current.srcObject = combinedStream;
+      localVideoRef.current.play();
+      return {
+        status:true
+      }
+    }catch(e) {
+      return {
+        status:false,
+        error:e
+      }
+    }
 	};
 
 	const consume = async (kind) => {
@@ -121,28 +137,12 @@ function Consumer() {
 		});
 	};
 
-	return (
-		<>
-			<div class=" grid ls:grid-cols-2  sm:grid-cols-2 gap-4 justify-between">
-				<div>
-					<center>
-						<video ref={localVideoRef} style={{ height: "400px" }} className=" mt-24" controls autoplay></video>
-					</center>
-
-					<div className="flex justify-center items-center mt-24">
-						<button className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={runTest}>
-							test
-						</button>
-					</div>
-				</div>
-        <div className="flex justify-center items-center">
-				<ChatBox username={username} />
-			</div>
-			</div>
-
-			
-		</>
-	);
+  return (
+    <div className="ViewCamWrapper#p6 ViewCamWrapper__vertical#AV view-cam-page-main widescreen-container">
+     	<LiveFeed videoRef={localVideoRef} play={play} playing={playing} setIsplaying={setIsplaying}/>
+      <ChatBox username={username} playing={playing}/>
+  </div>
+  )
 }
 
-export default Consumer;
+export default Index
