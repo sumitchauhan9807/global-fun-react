@@ -140,7 +140,7 @@ function Index() {
   return (
     <div className="ViewCamWrapper#p6 ViewCamWrapper__vertical#AV view-cam-page-main widescreen-container">
      	<LiveFeed videoRef={localVideoRef} play={play} playing={playing} setIsplaying={setIsplaying}/>
-      <ChatBox username={username} playing={playing}/>
+      <ChatBox modelName={username} playing={playing}/>
   </div>
   )
 }

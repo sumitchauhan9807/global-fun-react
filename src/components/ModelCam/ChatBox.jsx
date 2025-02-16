@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from 'react-router-dom';
 import {NewGoal,PubicMessage,PublicTip ,GoalStatus ,CreateAccount ,ModelMessage} from 'src/components/ModelCam/components/MessageItems'
 
-function ChatBox({username,playing}) {
+function ChatBox({modelName,playing}) {
   const appData = useSelector((state) => state.app);
 	let publicId = appData.publicId;
-  const [ subscription ,unSubscribe ] = useSubscribe(username)
-  const [ publish ] = usePubish(username)
+  const [ subscription ,unSubscribe ] = useSubscribe(modelName)
+  const [ publish ] = usePubish(modelName)
   const [message,setMessage] = useState("")
   const [chatMessages,setChatMessages] = useState([])
 	useEffect(()=>{
@@ -117,7 +117,8 @@ function ChatBox({username,playing}) {
                     {/* message start  */}
                     {chatMessages.map((message)=>{
                       return (
-                        <PubicMessage username="honich88" message={message.message} color="grey"/>
+                        
+                        <GetMessageItem modelName={modelName}  message={message} />
                       )
                     })}
                     {/* <NewGoal/>
@@ -169,6 +170,12 @@ function ChatBox({username,playing}) {
     </div>
   </div>
   )
+}
+const GetMessageItem = ({modelName,message}) =>{ 
+  if(message?.userType == 'model'){ 
+    return <ModelMessage username={modelName} message={message.message}/>
+  }
+  return <PubicMessage username="Gkjkjjuiio" message={message.message} color="diamond"/>
 }
 
 export default ChatBox
