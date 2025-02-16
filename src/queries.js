@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 
 
 export const GET_ALL_MODELS = gql`
-	query getAllModels {
-		getAllModels{
+	query getAllModelsPublic {
+		getAllModelsPublic{
 			username
 		}
 	}

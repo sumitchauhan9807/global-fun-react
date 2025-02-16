@@ -6,7 +6,7 @@ function Index() {
   const { loading, error, data } = useQuery(GET_ALL_MODELS);
 
 
-  let allModels = data?.getAllModels
+  let allModels = data?.getAllModelsPublic
   if(!allModels) return
   console.log(allModels)
   return (
