@@ -1,9 +1,17 @@
-function Sidebar() {
+import { useDispatch ,useSelector } from "react-redux";
+
+const Sidebar = () =>{ 
+  const appData = useSelector((state) => state.app);
+  if(!appData.sidebar) return 
   return (
-    <div className="app-sidebar-content app-sidebar-content-non-overlay" id="NON_OVERLAY_SIDEBAR_ID">
-      <div className="app-sidebar-full-content-scroll-container hide-scrollbar">
-        <div className="app-sidebar-full-content-padded">
-          <div className="app-sidebar-full-content-tokens-giveaway compact media-up-to-m-hidden tokens-giveaway-banner">
+    <div id="portal-root">
+    <div>
+      <div className="app-sidebar-overlay modal-base-overlay sidebar-overlay" style={{top: '54px'}}>
+        <div className="sidebar-overlay-overlay sidebar-overlay-overlay-open" />
+        <dialog className="app-sidebar-content modal-base-body sidebar-dialog sidebar-dialog-open" open>
+          <div className="app-sidebar-full-content-scroll-container hide-scrollbar">
+            <div className="app-sidebar-full-content-padded">
+            <div className="app-sidebar-full-content-tokens-giveaway compact media-up-to-m-hidden tokens-giveaway-banner">
             <div className=" tokens-giveaway-banner-container">
               <svg className="icon icon-tokens-2 tokens-giveaway-icon">
                 <use xlinkHref="#icons-tokens-2" />
@@ -254,9 +262,13 @@ function Sidebar() {
             </button>
             <div className="app-sidebar-lang-select-content collapse-section-content collapse-section-content-collapsed" />
           </div>
-        </div>
+            </div>
+          </div>
+          <div className="tooltip-v2-portal-container" id="sidebar-portal-container" />
+        </dialog>
       </div>
     </div>
+  </div>
   )
 }
 export default Sidebar

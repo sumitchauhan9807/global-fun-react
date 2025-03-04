@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
 	publicId: null,
+	sidebar:false
 };
 
 const app = createSlice({
@@ -11,9 +12,12 @@ const app = createSlice({
 		setPublicId: (state, action) => {
 			state.publicId = action.payload;
 		},
+		setSidebar: (state, action) => {
+			state.sidebar = action.payload;
+		},
 	},
 });
 
-export const { setPublicId } = app.actions;
+export const { setPublicId ,setSidebar } = app.actions;
 
 export default app.reducer;

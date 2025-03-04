@@ -1,6 +1,5 @@
-
-import LiveFeed from 'src/components/ModelCam/LiveFeed'
-import ChatBox from 'src/components/ModelCam/ChatBox'
+import LiveFeed from "src/components/ModelCam/LiveFeed";
+import ChatBox from "src/components/ModelCam/ChatBox";
 import { useMutation } from "@apollo/client";
 import { CREATE_CONSUMER_TRANSPORT, GET_RTP_CAPABILITIES, CONSUME_MEDIA, CONNECT_CONSUMER_TRANSPORT, UNPAUSE_CONSUMER } from "src/queries";
 import { Device } from "mediasoup-client";
@@ -16,9 +15,8 @@ let consumer = {
 	audio: null,
 };
 
-
 function Index() {
-  const appData = useSelector((state) => state.app);
+	const appData = useSelector((state) => state.app);
 	let publicId = appData.publicId;
 	let localVideoRef = useRef(null);
 	let { username } = useParams();
@@ -29,32 +27,56 @@ function Index() {
 	const [consumeMedia, { loadingCM }] = useMutation(CONSUME_MEDIA, { context: { apiName: "sfu" } });
 	const [connectConsumerTransport, { loadingCCT2 }] = useMutation(CONNECT_CONSUMER_TRANSPORT, { context: { apiName: "sfu" } });
 	const [unpauseConsumer, { loadingUP }] = useMutation(UNPAUSE_CONSUMER, { context: { apiName: "sfu" } });
-	const [playing,setIsplaying] = useState(false)
+	const [playing, setIsplaying] = useState(false);
 
+	const loadDevice = async () => {
+		if (device.loaded) return;
+		let { data } = await getRtpCap();
+		let routerRtpCapabilities = JSON.parse(data.getRtpCapabilities);
+		await device.load({ routerRtpCapabilities });
+	};
 
-  const play = async () => {
-    try{ 
-      let { data } = await getRtpCap();
-      let routerRtpCapabilities = JSON.parse(data.getRtpCapabilities);
-      await device.load({ routerRtpCapabilities });
-      await createConsumer();
-      const [audioConsumer, videoConsumer] = await Promise.all([consume("audio"), consume("video")]);
-      console.log(audioConsumer, "AUDIO CONSUMER");
-      console.log(videoConsumer, "VIDEO CONSUMER");
-      const combinedStream = new MediaStream([audioConsumer?.track, videoConsumer?.track]);
+	const handlePlayEvent = (data) => {
+		console.log(data,"handlePlayEvent")
+		// alert(data.status,"handle paly event")
+	}
 
-      // const combinedStream = new MediaStream([audioConsumer?.track])
-      localVideoRef.current.srcObject = combinedStream;
-      localVideoRef.current.play();
-      return {
-        status:true
-      }
-    }catch(e) {
-      return {
-        status:false,
-        error:e
-      }
-    }
+	useEffect(() => {
+		(async()=>{
+			let result = await play();
+			handlePlayEvent(result)
+			console.log(localVideoRef);
+		})()
+		return () => {
+			consumerTransport?.close();
+		};
+	}, []);
+
+	const play = async () => {
+		try {
+			localVideoRef.current.pause()
+			await loadDevice();
+			await createConsumer();
+			const [audioConsumer, videoConsumer] = await Promise.all([consume("audio"), consume("video")]);
+			// console.log(audioConsumer, "AUDIO CONSUMER");
+			// console.log(videoConsumer, "VIDEO CONSUMER");
+			const combinedStream = new MediaStream([audioConsumer?.track, videoConsumer?.track]);
+			localVideoRef.current.srcObject = combinedStream;
+			localVideoRef.current.play().then(()=>{
+
+			}).catch((e)=>{
+				console.log(e)
+			})
+			setIsplaying(true);
+			return {
+				status: true,
+			};
+		} catch (e) {
+			return {
+				status: false,
+				error: e,
+			};
+		}
 	};
 
 	const consume = async (kind) => {
@@ -82,32 +104,45 @@ function Index() {
 	};
 
 	const createConsumer = async () => {
-		let { data } = await createConsumerTransport({
-			variables: {
-				clientId: clientId,
-				modelId: modelId,
-			},
-		});
-		let { id, iceParameters, iceCandidates, dtlsParameters } = data.createConsumerTransport;
-		iceParameters = JSON.parse(iceParameters);
-		iceCandidates = JSON.parse(iceCandidates);
-		dtlsParameters = JSON.parse(dtlsParameters);
+		try {
+			let { data } = await createConsumerTransport({
+				variables: {
+					clientId: clientId,
+					modelId: modelId,
+				},
+			});
+			let { id, iceParameters, iceCandidates, dtlsParameters } = data.createConsumerTransport;
+			iceParameters = JSON.parse(iceParameters);
+			iceCandidates = JSON.parse(iceCandidates);
+			dtlsParameters = JSON.parse(dtlsParameters);
 
-		const transport = device.createRecvTransport({
-			id,
-			iceParameters,
-			iceCandidates,
-			dtlsParameters,
-		});
-		console.log(transport);
-		consumerTransport = transport;
-		consumerTransport.on("connectionstatechange", (state) => {
-			console.log("....connection state change....");
-			console.log(state);
+			const transport = device.createRecvTransport({
+				id,
+				iceParameters,
+				iceCandidates,
+				dtlsParameters,
+			});
+			console.log(transport);
+			consumerTransport = transport;
+			setTransportHandlers()
+			return 
+		} catch (e) {
+			throw Error(e)
+		}
+	};
+
+
+	const setTransportHandlers = () => {
+		consumerTransport.on("connectionstatechange", async (state) => {
+			console.log(state, "....connection state change....");
+			if (state == "disconnected") {
+				let result = await play();
+				handlePlayEvent(result)
+			}
 		});
 		consumerTransport.on("icegatheringstatechange", (state) => {
-			console.log("....ice gathering change....");
-			console.log(state);
+			// console.log("....ice gathering change....");
+			// console.log(state);
 		});
 		consumerTransport.on("connect", async ({ dtlsParameters }, callback, errback) => {
 			console.log("Transport Consume connect event has fired!");
@@ -135,14 +170,15 @@ function Index() {
 			// }
 			// console.log(resp)
 		});
-	};
+	}
 
-  return (
-    <div className="ViewCamWrapper#p6 ViewCamWrapper__vertical#AV view-cam-page-main widescreen-container">
-     	<LiveFeed videoRef={localVideoRef} play={play} playing={playing} setIsplaying={setIsplaying}/>
-      <ChatBox modelName={username} playing={playing}/>
-  </div>
-  )
+	return (
+		<div className="ViewCamWrapper#p6 ViewCamWrapper__vertical#AV view-cam-page-main widescreen-container">
+			<LiveFeed videoRef={localVideoRef} playing={playing} />
+			<ChatBox modelName={username} playing={playing} />
+			{/* <button style={{height:"500px"}} onClick={()=>{ console.log(consumerTransport)}}>test</button> */}
+		</div>
+	);
 }
 
-export default Index
+export default Index;

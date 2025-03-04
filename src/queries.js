@@ -1,10 +1,53 @@
 import { gql } from "@apollo/client";
 
+export const LOGIN = gql`
+	mutation login($data: LoginInput!) {
+		login(data: $data) {
+			user {
+				id
+				email
+				username
+				name
+			}
+			token
+		}
+	}
+`;
+
+export const REGISTER = gql`
+	mutation register($data: RegisterInput!) {
+		register(data: $data) {
+			user {
+				id
+				email
+				username
+				name
+			}
+			token
+		}
+	}
+`;
+
 
 export const GET_ALL_MODELS = gql`
 	query getAllModelsPublic {
 		getAllModelsPublic{
 			username
+			avatar
+		}
+	}
+`;
+
+export const GET_ALL_LIVE_SESSIONS = gql`
+	query getAllActiveLiveSessions {
+		getAllActiveLiveSessions{
+			id
+			title
+			status
+			model{
+				username
+				avatar
+			}
 		}
 	}
 `;
@@ -52,6 +95,7 @@ export const CREATE_CONSUMER_TRANSPORT = gql`
 			iceParameters
 			iceCandidates
 			dtlsParameters
+			sessionId
 		}
 	}
 `;
