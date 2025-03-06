@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { RotatingLines } from "react-loader-spinner";
-function LiveFeed({ videoRef, playing }) {
+import CamFunctions from 'src/components/ModelCam/components/CamFunctions'
+function LiveFeed({ videoRef, playing ,session }) {
 	return (
 		<div className="ViewCamWrapper__videoLayout#EP video view-cam">
 			<div className="view-cam-notifications view-cam-notifications-hls" />
@@ -100,208 +101,17 @@ function LiveFeed({ videoRef, playing }) {
 								<div className="player-controls-layers__layer player-controls-layers__layer--alternate-controls player-controls-layers__layer--hidden">
 									<div className="player-controls-user__overlay-top-btn" />
 								</div>
-								<div className="player-controls-layers__layer player-controls-layers__layer--permanent-controls">
+								{/* <div className="player-controls-layers__layer player-controls-layers__layer--permanent-controls">
 									<button className="btn ds-btn-inline-block player-controls-user__join-btn player-join-button" type="button">
 										Join Me for Free
 									</button>
-								</div>
+								</div> */}
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div>
-				<div className="view-cam-controls with-new-send-tip">
-					<div className="view-cam-controls-wrapper">
-						<div className="favorite-control">
-							<div className="favorite-control__mobile" />
-							<div className="favorite-control__desktop">
-								<div data-tooltip role="tooltip" className="absolute absolute-top hidden is-optimized notifications-tooltip tooltip" style={{ top: "initial", bottom: "100%" }}>
-									<div className="tooltip-inner">
-										<div className="collapsed notifications-tooltip-content">
-											<div className="visible-wrapper">
-												<div className="close">
-													<svg className="icon icon-close-ds" style={{ height: "14px", width: "14px" }}>
-														<use xlinkHref="#icons-close-ds" />
-													</svg>
-												</div>
-												<div className="main-settings">
-													<div className="bell">
-														<svg className="icon icon-notifications-off-2">
-															<use xlinkHref="#icons-notifications-off-2" />
-														</svg>
-													</div>
-													<span className="notifications-tooltip-title">Notify when model goes live or sends message?</span>
-													<div className="light main-switcher medium switcher">
-														<div className="switcher-wrapper">
-															<span className="switcher-label">
-																<svg className="icon icon-switcher-ds">
-																	<use xlinkHref="#icons-switcher-ds" />
-																</svg>
-															</span>
-															<span className="switcher-switch" />
-															<span className="switcher-label" />
-														</div>
-													</div>
-												</div>
-												<div className="animated methods-wrapper">
-													<div className="methods">
-														<span className="methods-title">Notify me by:</span>
-														<div>
-															<div className="method method-disabled method-email">
-																<span>
-																	Email
-																	<span id="notification-tooltip-content_1739000883387_notification-tooltip-email-warning" className="notifications-tooltip-warning-hint">
-																		<svg className="icon icon-exclamation-circle">
-																			<use xlinkHref="#icons-exclamation-circle" />
-																		</svg>
-																	</span>
-																</span>
-																<div className="default light method__switcher switcher">
-																	<div className="switcher-wrapper">
-																		<span className="switcher-label">
-																			<svg className="icon icon-switcher-ds">
-																				<use xlinkHref="#icons-switcher-ds" />
-																			</svg>
-																		</span>
-																		<span className="switcher-switch" />
-																		<span className="switcher-label" />
-																	</div>
-																</div>
-															</div>
-															<div className="method">
-																<span>Browser Notifications</span>
-																<div className="default light method__switcher switcher">
-																	<div className="switcher-wrapper">
-																		<span className="switcher-label">
-																			<svg className="icon icon-switcher-ds">
-																				<use xlinkHref="#icons-switcher-ds" />
-																			</svg>
-																		</span>
-																		<span className="switcher-switch" />
-																		<span className="switcher-label" />
-																	</div>
-																</div>
-															</div>
-														</div>
-														<div className="CollapsedV2#B0 CollapsedV2_clickAll#Du CollapsedV2_closed#r2 PWANotificationTooltipQrCode#Xr notifications-tooltip-content__pwa undefined">
-															<div className="CollapsedV2__header#eU PWANotificationTooltipQrCode__headerWrapper#zh">
-																<div className="PWANotificationTooltipQrCode__header#oh">
-																	<div className="PWANotificationTooltipQrCode__logo#Ge pwa-logo pwa-logo--white">
-																		<img className="pwa-logo__wl" src="https://assets.strpst.com/assets/icons/appicon_stripchat.global.png?v=28b983cf" alt="Stripchat Global" />
-																	</div>
-																	<div>
-																		<div className="PWANotificationTooltipQrCode__title#z7">Get Stripchat Global App</div>
-																		<div className="PWANotificationTooltipQrCode__description#Yk">Quick mobile access &amp; notifications</div>
-																	</div>
-																</div>
-																<svg className="CollapsedV2__iconClose#L8 PWANotificationTooltipQrCode__chevronIcon#Ci icon icon-chevron-down-ds">
-																	<use xlinkHref="#icons-chevron-down-ds" />
-																</svg>
-															</div>
-															<div className="CollapsedV2__contentWrapper#gy">
-																<div className="CollapsedV2__content#eh">
-																	<div className="PWANotificationTooltipQrCode__body#tI">
-																		<div className="PWANotificationTooltipQrCode__scanText#wJ">Scan with your phone camera</div>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div className="add-to-favorite-control">
-								<button aria-label="Add Favorite" className="a11y-button add-to-favorite-control__toggle add-to-favorite-control__toggle-new" type="button">
-									<svg className="add-to-favorite-control__favorite-icon add-to-favorite-control__favorite-icon--desktop add-to-favorite-control__favorite-icon-new icon icon-heart-2">
-										<use xlinkHref="#icons-heart-2" />
-									</svg>
-								</button>
-								<div className="add-to-favorite-control__favorited-count favorited-count">81.7k</div>
-							</div>
-							<div className="broken-heart-icons-preloader" />
-						</div>
-						<div className="view-cam-controls-wrapper__left" />
-						<div className="view-cam-controls-wrapper__center" />
-						<div className="view-cam-controls-wrapper__right">
-							<div className="view-cam-buttons-wrapper">
-								<span className="view-cam-controls__btn-wrapper">
-									<button className="btn btn-gold-outline-ds btn-inline-block btn-large view-cam-controls-btn view-cam-controls__private-btn" type="button">
-										<span className="view-cam-controls-text--short">Private</span>
-										<span className="view-cam-controls-text">Private Show</span>
-										<span className="view-cam-controls__private-btn-price">
-											&nbsp;<span className="btn-gold-outline-ds__accent-text">90 tk</span>
-										</span>
-									</button>
-								</span>
-								<span className="view-cam-controls__btn-wrapper">
-									<button className="btn ds-btn-apply-2-ds ds-btn-inline-block send-tip-btn send-tip-button send-tip-button--with-icon" type="button">
-										<span className="view-cam-controls-text--short">Tip</span>
-										<span className="view-cam-controls-text">Send Tip</span>
-										<span className="send-tip-button__icon-container">
-											<svg className="IconV2__icon#YR send-tip-button__icon">
-												<use xlinkHref="#icons-chat-actions" />
-											</svg>
-										</span>
-									</button>
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div className="closed subscriptions-control-panel" />
-				<div className="view-cam-info view-cam-info--visible view-cam-info--with-new-goal">
-					<div className="view-cam-info-goal">
-						<div className="epic-goal-progress__wrap epic-goal-progress__wrap--view-cam">
-							<span className="epic-goal-progress__icon-wrap">
-								<svg style={{ height: "18px", width: "18px" }} className="epic-goal-progress__icon icon icon-goal">
-									<use xlinkHref="#icons-goal" />
-								</svg>
-							</span>
-							<div className="epic-goal-progress__animation-container" />
-							<div className="epic-goal-progress__progress-filler epic-goal-progress__progress-filler--active" />
-							<div className="epic-goal-progress__content">
-								<div className="epic-goal-progress__inner epic-goal-progress__inner--view-cam" style={{ width: "0.3%" }} />
-								<div className="epic-goal-progress epic-goal-progress--view-cam">
-									<div className="epic-goal-progress__information epic-goal-progress__information--view-cam">
-										<span>Goal:{/* */}</span>
-										<span className="epic-goal-progress__tokens">553 tk</span>
-										<span>{/* */}Dildo fuck</span>
-									</div>
-									<div className="epic-goal-progress__status epic-goal-progress__status--view-cam">0.3{/* */}%</div>
-								</div>
-							</div>
-						</div>
-						<h2 className="media-up-to-xs-hidden view-cam-info-goal__title view-cam-info-topic">
-							<span>. </span>
-							<span>​</span>
-							<span>Insta: </span>
-							<span>​</span>
-							<span>June</span>
-							<span>​</span>
-							<span>695_ ♥️ </span>
-							<span>​</span>
-							<span>Tg: </span>
-							<span>​</span>
-							<span>Jjune</span>
-							<span>​</span>
-							<span>695</span>
-							<span>​</span>
-						</h2>
-					</div>
-					<div className="view-cam-info-king">
-						<div className="view-cam-info-king-content" id="view_cam_info_king">
-							King of the room:
-							<span className="become-king-info">
-								Tip <span className="king-threshold">500 tk</span> in total!
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
+			<CamFunctions session={session}/>
 		</div>
 	);
 }

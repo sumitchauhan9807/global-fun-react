@@ -1,11 +1,14 @@
 import LiveFeed from "src/components/ModelCam/LiveFeed";
 import ChatBox from "src/components/ModelCam/ChatBox";
-import { useMutation } from "@apollo/client";
+import { useMutation ,useQuery } from "@apollo/client";
 import { CREATE_CONSUMER_TRANSPORT, GET_RTP_CAPABILITIES, CONSUME_MEDIA, CONNECT_CONSUMER_TRANSPORT, UNPAUSE_CONSUMER } from "src/queries";
 import { Device } from "mediasoup-client";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import {useSubscribe , usePubish} from 'src/Hooks/PubNub'
+import { GET_MODEL_ACTIVE_LIVE_SESSION } from "src/queries";
+
 // import ChatBox from "src/components/ChatBox";
 const device = new Device();
 let localStream = null;
@@ -28,6 +31,46 @@ function Index() {
 	const [connectConsumerTransport, { loadingCCT2 }] = useMutation(CONNECT_CONSUMER_TRANSPORT, { context: { apiName: "sfu" } });
 	const [unpauseConsumer, { loadingUP }] = useMutation(UNPAUSE_CONSUMER, { context: { apiName: "sfu" } });
 	const [playing, setIsplaying] = useState(false);
+
+	const [ subscription ,unSubscribe ] = useSubscribe(username)
+  const [ publish ] = usePubish(username)
+  const [chatMessages,setChatMessages] = useState([])
+	const [session,setSession] = useState(null)
+
+	const modelActiveSession = useQuery(GET_MODEL_ACTIVE_LIVE_SESSION,{
+		variables:{
+			username:username
+		}
+	})
+	useEffect(()=>{
+		setSession(modelActiveSession.data?.getModelActiveSessionByUsername)
+	},[modelActiveSession.data])
+	
+
+	useEffect(()=>{
+		subscription.onMessage = (messageEvent) => {
+			console.log("Message event: ", messageEvent);
+			if(messageEvent.message.type == 'MESSAGE') {
+				setChatMessages((prev)=>{
+					return [...prev,messageEvent.message]
+				})
+			}
+			if(messageEvent.message.type == 'GOAL_ADDED') {
+				setSession((prev)=>{
+					let currentSess = {...prev}
+					let goals = currentSess.goals
+					goals = [ ...goals , messageEvent.message.goal]
+					currentSess.goals = goals
+					return currentSess
+				})
+			}
+      // setMessage("")
+      return () => {
+        alert("unsubb")
+        unSubscribe()
+      }
+		};
+  },[])
 
 	const loadDevice = async () => {
 		if (device.loaded) return;
@@ -174,8 +217,8 @@ function Index() {
 
 	return (
 		<div className="ViewCamWrapper#p6 ViewCamWrapper__vertical#AV view-cam-page-main widescreen-container">
-			<LiveFeed videoRef={localVideoRef} playing={playing} />
-			<ChatBox modelName={username} playing={playing} />
+			<LiveFeed videoRef={localVideoRef} playing={playing} session={session}  />
+			<ChatBox modelName={username} playing={playing} publish={publish} chatMessages={chatMessages} />
 			{/* <button style={{height:"500px"}} onClick={()=>{ console.log(consumerTransport)}}>test</button> */}
 		</div>
 	);

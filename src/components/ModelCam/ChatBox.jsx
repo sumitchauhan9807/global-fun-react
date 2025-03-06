@@ -4,26 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from 'react-router-dom';
 import {NewGoal,PubicMessage,PublicTip ,GoalStatus ,CreateAccount ,ModelMessage} from 'src/components/ModelCam/components/MessageItems'
 
-function ChatBox({modelName,playing}) {
+function ChatBox({modelName,playing,publish,chatMessages}) {
   const appData = useSelector((state) => state.app);
 	let publicId = appData.publicId;
-  const [ subscription ,unSubscribe ] = useSubscribe(modelName)
-  const [ publish ] = usePubish(modelName)
+  
   const [message,setMessage] = useState("")
-  const [chatMessages,setChatMessages] = useState([])
-	useEffect(()=>{
-		subscription.onMessage = (messageEvent) => {
-			console.log("Message event: ", messageEvent);
-      setChatMessages((prev)=>{
-        return [...prev,messageEvent.message]
-      })
-      setMessage("")
-      return () => {
-        alert("unsubb")
-        unSubscribe()
-      }
-		};
-  },[])
+  
 
   const location = useLocation();
 
@@ -33,11 +19,13 @@ function ChatBox({modelName,playing}) {
 
   const sendMessage = () => {
     if(!playing) return alert('model must come online')
-    if(message.length < 2) return alert("message length should be grater tahn 2")
+    if(message.length < 2) return alert("message length should be grater than 2")
     publish({
       publicId:publicId,
-      message:message
+      message:message,
+      type:"MESSAGE",
     })
+    setMessage("")
     console.log(chatMessages)
   }
   const handleKeyDown = (e) => {
